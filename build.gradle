@@ -1,0 +1,39 @@
+plugins {
+	id 'groovy-gradle-plugin'
+	id 'maven-publish'
+}
+
+group = 'net.swedz'
+version = (System.getenv("VERSION") ?: "0.0.0-local")
+base {
+	archivesName = project.artifact_name
+}
+
+logger.lifecycle("Deploy-Inator version ${version}")
+
+gradlePlugin {
+	plugins {
+		it.register("deployInator") {
+			id = "net.swedz.deploy-inator"
+			implementationClass = "net.swedz.deployinator.DeployinatorPlugin"
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+	gradlePluginPortal()
+}
+
+dependencies {
+	implementation "org.apache.groovy:groovy:5.0.6"
+	implementation "me.modmuss50:mod-publish-plugin:2.1.1"
+}
+
+publishing {
+	publications {
+		register('pluginMaven', MavenPublication) {
+			artifactId = project.artifact_name
+		}
+	}
+}
