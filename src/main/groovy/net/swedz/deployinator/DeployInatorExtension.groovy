@@ -61,4 +61,19 @@ abstract class DeployInatorExtension
 			this.getRelations().set(projectRelations)
 		}
 	}
+	
+	@Nested
+	abstract Discord getDiscord()
+	
+	void discord(Action<? super Discord> action)
+	{
+		action.execute(this.getDiscord())
+	}
+	
+	abstract static class Discord
+	{
+		abstract Property<String> getName()
+		
+		abstract Property<String> getIconUrl()
+	}
 }

@@ -10,23 +10,16 @@ jobs:
     steps:
       # Set up Github actions, JDK & Gradle
       - uses: actions/checkout@v2
-      - name: Set up JDK 21
+      - name: Set up JDK %{java_version}%
         uses: actions/setup-java@v3
         with:
-          java-version: 21
+          java-version: %{java_version}%
           cache: gradle
           distribution: temurin
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       # Load the variables needed
-      - name: Load gradle.properties into the environment
-        run: |
-          while IFS='=' read -r key value; do
-            [[ -z "$key" || "$key" =~ ^#.* ]] && continue
-            env_key=$(echo "$key" | tr '[:lower:]' '[:upper:]' | tr '.' '_')
-            echo "${env_key}=${value}" >> $GITHUB_ENV
-          done < gradle.properties
       - name: Load GitHub variables into the environment
         run: |
           echo "GITHUB_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
@@ -58,18 +51,25 @@ jobs:
         run: ./gradlew build
       - name: Publish to ModMaven
         uses: gradle/gradle-build-action@v2
+        if: ${{ secrets.MODMAVEN_USERNAME && secrets.MODMAVEN_PASSWORD }}
         with:
           arguments: publishMavenJavaPublicationToModmavenRepository
         env:
           MODMAVEN_USERNAME: ${{ secrets.MODMAVEN_USERNAME }}
           MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
-      - name: Publish to Curseforge and Modrinth
-        run: ./gradlew publishMods
+      - name: Publish to Curseforge
+        if: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: ./gradlew publishCurseforge
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      - name: Publish to Modrinth
+        if: ${{ secrets.MODRINTH_API_KEY }}
+        run: ./gradlew publishModrinth
+        env:
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
 
       # Post to the Discord that the update has been deployed
       - name: Post to Discord
+        if: ${{ secrets.RELEASE_WEBHOOK_URL }}
         run: |
           curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data @prepared_discord_message.json ${{ secrets.RELEASE_WEBHOOK_URL }}

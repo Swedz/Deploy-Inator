@@ -26,20 +26,25 @@ class DeployInatorPlugin implements Plugin<Project>
 		project.afterEvaluate {
 			if(deployInator.autoGenerateFiles.get())
 			{
-				GenerateFilesFromTemplates.generate(project)
+				GenerateFilesFromTemplates.generate(project, deployInator)
 			}
-			applyGenerateFilesTask(project)
+			applyGenerateFilesTask(project, deployInator)
 			applyBuildChangelog(it)
 			applyModMaven(it, deployInator)
 			applyPublishMods(it, deployInator)
 		}
 	}
 	
-	private static void applyGenerateFilesTask(Project project)
+	static JavaVersion getJavaVersionByProjectToolchain(Project project)
+	{
+		return JavaVersion.toVersion(project.extensions.getByType(JavaPluginExtension).toolchain.languageVersion.get().asInt())
+	}
+	
+	private static void applyGenerateFilesTask(Project project, DeployInatorExtension deployInator)
 	{
 		project.tasks.register("deployInatorGenerateFiles") {
 			it.doLast {
-				GenerateFilesFromTemplates.generate(project)
+				GenerateFilesFromTemplates.generate(project, deployInator)
 			}
 		}
 	}
@@ -107,7 +112,7 @@ class DeployInatorPlugin implements Plugin<Project>
 		publishMods.curseforge { Curseforge curseforge ->
 			curseforge.projectId.set(extension.curseforge.id.get())
 			curseforge.accessToken.set(System.getenv("CURSEFORGE_API_KEY"))
-			curseforge.javaVersions.add(JavaVersion.toVersion(project.extensions.getByType(JavaPluginExtension).toolchain.languageVersion.get().asInt()))
+			curseforge.javaVersions.add(getJavaVersionByProjectToolchain(project))
 			curseforge.client.set(true)
 			curseforge.server.set(true)
 			curseforge.changelogType.set("markdown")
