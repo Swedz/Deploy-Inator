@@ -15,7 +15,7 @@ gradlePlugin {
 	plugins {
 		it.register("deployInator") {
 			id = "net.swedz.deploy-inator"
-			implementationClass = "net.swedz.deployinator.DeployinatorPlugin"
+			implementationClass = "net.swedz.deployinator.DeployInatorPlugin"
 		}
 	}
 }

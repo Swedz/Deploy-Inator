@@ -11,7 +11,7 @@ class GenerateFilesFromTemplates
 		copyTemplate(project, ".github/workflows/deploy.yml")
 		copyTemplate(project, ".github/workflows/discord_message.json")
 	}
-
+	
 	private static void copyTemplate(Project project, String path)
 	{
 		var destinationFile = project.file(path)
@@ -20,14 +20,14 @@ class GenerateFilesFromTemplates
 		{
 			parentDirectory.mkdirs()
 		}
-
+		
 		var resourcePath = "/templates/" + path
-		var resourceStream = DeployinatorPlugin.getResourceAsStream(resourcePath)
+		var resourceStream = DeployInatorPlugin.getResourceAsStream(resourcePath)
 		if(resourceStream == null)
 		{
 			throw new IllegalStateException("Could not find template file at resource path: ${resourcePath}")
 		}
-
+		
 		var templateContent = new String(resourceStream.readAllBytes(), StandardCharsets.UTF_8)
 		if(!destinationFile.exists() || destinationFile.text != templateContent)
 		{
