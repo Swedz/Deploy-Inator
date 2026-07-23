@@ -4,12 +4,12 @@ import me.modmuss50.mpp.ModPublishExtension
 import me.modmuss50.mpp.ReleaseType
 import me.modmuss50.mpp.platforms.curseforge.Curseforge
 import me.modmuss50.mpp.platforms.modrinth.Modrinth
+import me.modmuss50.mpp.platforms.modrinth.ModrinthEnvironment
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.jvm.tasks.Jar
 
 class DeployInatorPlugin implements Plugin<Project>
@@ -22,6 +22,7 @@ class DeployInatorPlugin implements Plugin<Project>
 		
 		var deployInator = project.extensions.create("deployInator", DeployInatorExtension)
 		deployInator.autoGenerateFiles.convention(false)
+		deployInator.maven.includeModMavenRepository.convention(true)
 		
 		project.afterEvaluate {
 			if(deployInator.autoGenerateFiles.get())
@@ -62,25 +63,17 @@ class DeployInatorPlugin implements Plugin<Project>
 	{
 		var publishing = project.extensions.getByType(PublishingExtension)
 		
-		publishing.publications {
-			it.register('mavenJava', MavenPublication) {
-				it.from project.components.java
-				it.artifactId = extension.artifactName.get()
-				it.artifact(project.tasks.named("sourceJar")) {
-					it.setClassifier("sources")
+		if(extension.maven.includeModMavenRepository.get())
+		{
+			publishing.repositories {
+				it.maven {
+					credentials {
+						it.username = System.getenv("MODMAVEN_USERNAME")
+						it.password = System.getenv("MODMAVEN_PASSWORD")
+					}
+					name = "modmaven"
+					url = "https://modmaven.dev/artifactory/local-releases/"
 				}
-			}
-		}
-		
-		publishing.repositories {
-			it.mavenLocal()
-			it.maven {
-				credentials {
-					it.username = System.getenv("MODMAVEN_USERNAME")
-					it.password = System.getenv("MODMAVEN_PASSWORD")
-				}
-				name = "modmaven"
-				url = "https://modmaven.dev/artifactory/local-releases/"
 			}
 		}
 	}
@@ -98,6 +91,11 @@ class DeployInatorPlugin implements Plugin<Project>
 	
 	private static void applyPublishMods(Project project, DeployInatorExtension extension)
 	{
+		if(!extension.modName.isPresent())
+		{
+			return
+		}
+		
 		var publishMods = project.extensions.getByType(ModPublishExtension)
 		
 		publishMods.changelog.set(System.getenv("MOD_CHANGELOG_TRIMMED_PUBLISH"))
@@ -109,54 +107,62 @@ class DeployInatorPlugin implements Plugin<Project>
 		publishMods.displayName.set("${extension.modName.get()} ${project.version}")
 		publishMods.modLoaders.set(["neoforge"])
 		
-		publishMods.curseforge { Curseforge curseforge ->
-			curseforge.projectId.set(extension.curseforge.id.get())
-			curseforge.accessToken.set(System.getenv("CURSEFORGE_API_KEY"))
-			curseforge.javaVersions.add(getJavaVersionByProjectToolchain(project))
-			curseforge.client.set(true)
-			curseforge.server.set(true)
-			curseforge.changelogType.set("markdown")
-			
-			curseforge.minecraftVersions.addAll(extension.compatibleMinecraftVersions.get())
-			
-			extension.curseforge.relations.get().each {
-				var dependency = it.getKey()
-				var requirementType = it.getValue()
-				switch(requirementType)
-				{
-					case "required":
-						curseforge.requires(dependency)
-						break
-					case "optional":
-						curseforge.optional(dependency)
-						break
-					case "incompatibility":
-						curseforge.incompatible(dependency)
-						break
+		if(extension.curseforge.enabled.getOrElse(false))
+		{
+			publishMods.curseforge { Curseforge curseforge ->
+				curseforge.projectId.set(extension.curseforge.id.get())
+				curseforge.accessToken.set(System.getenv("CURSEFORGE_API_KEY"))
+				curseforge.javaVersions.add(getJavaVersionByProjectToolchain(project))
+				curseforge.client.set(extension.curseforge.client.orElse(true))
+				curseforge.server.set(extension.curseforge.server.orElse(true))
+				curseforge.changelogType.set("markdown")
+				
+				curseforge.minecraftVersions.addAll(extension.compatibleMinecraftVersions.get())
+				
+				extension.curseforge.relations.get().each {
+					var dependency = it.getKey()
+					var requirementType = it.getValue()
+					switch(requirementType)
+					{
+						case "required":
+							curseforge.requires(dependency)
+							break
+						case "optional":
+							curseforge.optional(dependency)
+							break
+						case "incompatibility":
+							curseforge.incompatible(dependency)
+							break
+					}
 				}
 			}
 		}
 		
-		publishMods.modrinth { Modrinth modrinth ->
-			modrinth.projectId.set(extension.modrinth.id.get())
-			modrinth.accessToken.set(System.getenv("MODRINTH_API_KEY"))
-			
-			modrinth.minecraftVersions.addAll(extension.compatibleMinecraftVersions.get())
-			
-			extension.modrinth.relations.get().each {
-				var dependency = it.getKey()
-				var requirementType = it.getValue()
-				switch(requirementType)
-				{
-					case "required":
-						modrinth.requires(dependency)
-						break
-					case "optional":
-						modrinth.optional(dependency)
-						break
-					case "incompatibility":
-						modrinth.incompatible(dependency)
-						break
+		if(extension.modrinth.enabled.getOrElse(false))
+		{
+			publishMods.modrinth { Modrinth modrinth ->
+				modrinth.projectId.set(extension.modrinth.id.get())
+				modrinth.accessToken.set(System.getenv("MODRINTH_API_KEY"))
+				
+				modrinth.environment.set(extension.modrinth.environment.orElse(ModrinthEnvironment.CLIENT_AND_SERVER))
+				
+				modrinth.minecraftVersions.addAll(extension.compatibleMinecraftVersions.get())
+				
+				extension.modrinth.relations.get().each {
+					var dependency = it.getKey()
+					var requirementType = it.getValue()
+					switch(requirementType)
+					{
+						case "required":
+							modrinth.requires(dependency)
+							break
+						case "optional":
+							modrinth.optional(dependency)
+							break
+						case "incompatibility":
+							modrinth.incompatible(dependency)
+							break
+					}
 				}
 			}
 		}
