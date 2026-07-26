@@ -5,7 +5,6 @@
 A simple gradle plugin that simplifies the deployment process for Minecraft mods.
 
 ## Setup
-***
 
 First, you must included ModMaven in your plugin management repositories in your `settings.gradle`:
 
@@ -102,7 +101,6 @@ deployInator {
 ```
 
 ## Generating GitHub Workflow
-***
 
 After making changes to your build scripts or gradle properties that pertains to your Deploy-Inator configuration, if
 you do not have `autoGenerateFiles` set to `true`, you should run the `deployInatorGenerateFiles` task. This will
