@@ -14,6 +14,17 @@ logger.lifecycle("Deploy-Inator version ${version}")
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+tasks.named("jar") {
+	from "LICENSE"
+}
+
+tasks.register("sourceJar", Jar) {
+	group = "build"
+	archiveClassifier.set("sources")
+	from sourceSets.main.allJava
+	from "LICENSE"
+}
+
 gradlePlugin {
 	plugins {
 		it.register("deployInator") {
@@ -42,6 +53,8 @@ publishing {
 	publications {
 		register('plugin', MavenPublication) {
 			artifactId = project.artifact_name
+			from components.java
+			artifact tasks.named("sourceJar")
 		}
 	}
 }
