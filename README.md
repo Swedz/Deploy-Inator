@@ -100,8 +100,26 @@ deployInator {
 }
 ```
 
-## Generating GitHub Workflow
+## GitHub Workflow
+
+### Generating Files
 
 After making changes to your build scripts or gradle properties that pertains to your Deploy-Inator configuration, if
 you do not have `autoGenerateFiles` set to `true`, you should run the `deployInatorGenerateFiles` task. This will
 generate your GitHub workflow and related files for you. Otherwise, your workflow configuration may become out of date.
+
+### Secrets
+
+In order for Deploy-Inator to publish your project to ModMaven, Curseforge, Modrinth, and Discord, you must configure
+your GitHub repository with your secrets. These can be added in your repository's settings under `Security and quality >
+Secrets and variables > Actions > Secrets > Repository secrets`. The below are the secret names needed and what they
+are used for.
+
+If a secret pertaining to a given step is not set in your repository, the step will be skipped.
+
+| Secret Name                             | Definition                                           |
+|-----------------------------------------|------------------------------------------------------|
+| MODMAVEN_USERNAME<br/>MODMAVEN_PASSWORD | The username and password to your ModMaven account.  |
+| CURSEFORGE_API_KEY                      | The API key to publish to Curseforge with.           |
+| MODRINTH_API_KEY                        | The API key to publish to Modrinth with.             |
+| RELEASE_WEBHOOK_URL                     | The webhook URL to use to send a message in Discord. |
