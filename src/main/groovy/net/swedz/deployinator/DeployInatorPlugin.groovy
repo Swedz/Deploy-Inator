@@ -101,7 +101,8 @@ class DeployInatorPlugin implements Plugin<Project>
 	private static void applyPublishMods(Project project, DeployInatorExtension extension)
 	{
 		if(!extension.modName.isPresent() ||
-		   !extension.compatibleMinecraftVersions.isPresent())
+		   !extension.compatibleMinecraftVersions.isPresent() ||
+		   !extension.modLoaders.isPresent())
 		{
 			return
 		}
@@ -115,7 +116,7 @@ class DeployInatorPlugin implements Plugin<Project>
 		})
 		publishMods.version.set(project.version.toString())
 		publishMods.displayName.set("${extension.modName.get()} ${project.version}")
-		publishMods.modLoaders.set(["neoforge"])
+		publishMods.modLoaders.addAll(extension.modLoaders.get())
 		
 		if(extension.curseforge.enabled.get())
 		{

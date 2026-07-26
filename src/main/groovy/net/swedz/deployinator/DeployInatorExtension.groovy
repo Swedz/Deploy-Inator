@@ -20,6 +20,13 @@ abstract class DeployInatorExtension
 		this.getCompatibleMinecraftVersions().addAll(versions.split(","))
 	}
 	
+	abstract ListProperty<String> getModLoaders()
+	
+	void modLoaders(String modLoaders)
+	{
+		this.getModLoaders().addAll(modLoaders.split(","))
+	}
+	
 	@Nested
 	abstract Maven getMaven()
 	

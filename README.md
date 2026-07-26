@@ -49,6 +49,10 @@ deployInator {
 	// This should be a list such as: {version},...
 	// Optional. Must be set if Curseforge or Modrinth publishing is to be used.
 	compatibleMinecraftVersions project.compatible_minecraft_versions
+	// The list of mod loaders that your mod supports.
+	// This should be a list such as: {loader},...
+	// Optional. Must be set if Curseforge or Modrinth publishing is to be used.
+	modLoaders "neoforge"
 	
 	maven {
 		// The publication name to use when publishing, as defined by your registered publication in your build.gradle.
