@@ -11,8 +11,6 @@ abstract class DeployInatorExtension
 {
 	abstract Property<Boolean> getAutoGenerateFiles()
 	
-	abstract Property<String> getArtifactName()
-	
 	abstract Property<String> getModName()
 	
 	abstract ListProperty<String> getCompatibleMinecraftVersions()
