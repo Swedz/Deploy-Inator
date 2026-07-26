@@ -47,8 +47,6 @@ publishing {
 }
 
 deployInator {
-	artifactName = project.artifact_name
-	
 	maven {
 		publicationName = "plugin"
 	}
