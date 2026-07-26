@@ -91,7 +91,8 @@ class DeployInatorPlugin implements Plugin<Project>
 	
 	private static void applyPublishMods(Project project, DeployInatorExtension extension)
 	{
-		if(!extension.modName.isPresent())
+		if(!extension.modName.isPresent() ||
+		   !extension.compatibleMinecraftVersions.isPresent())
 		{
 			return
 		}
