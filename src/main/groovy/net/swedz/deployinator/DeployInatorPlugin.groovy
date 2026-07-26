@@ -22,7 +22,11 @@ class DeployInatorPlugin implements Plugin<Project>
 		
 		var deployInator = project.extensions.create("deployInator", DeployInatorExtension)
 		deployInator.autoGenerateFiles.convention(false)
+		deployInator.maven.enabled.convention(false)
 		deployInator.maven.includeModMavenRepository.convention(true)
+		deployInator.curseforge.enabled.convention(false)
+		deployInator.modrinth.enabled.convention(false)
+		deployInator.discord.enabled.convention(false)
 		
 		project.afterEvaluate {
 			if(deployInator.autoGenerateFiles.get())
@@ -61,6 +65,11 @@ class DeployInatorPlugin implements Plugin<Project>
 	
 	private static void applyModMaven(Project project, DeployInatorExtension extension)
 	{
+		if(!extension.maven.enabled.get())
+		{
+			return
+		}
+		
 		var publishing = project.extensions.getByType(PublishingExtension)
 		
 		if(extension.maven.includeModMavenRepository.get())
@@ -108,7 +117,7 @@ class DeployInatorPlugin implements Plugin<Project>
 		publishMods.displayName.set("${extension.modName.get()} ${project.version}")
 		publishMods.modLoaders.set(["neoforge"])
 		
-		if(extension.curseforge.enabled.getOrElse(false))
+		if(extension.curseforge.enabled.get())
 		{
 			publishMods.curseforge { Curseforge curseforge ->
 				curseforge.projectId.set(extension.curseforge.id.get())
@@ -139,7 +148,7 @@ class DeployInatorPlugin implements Plugin<Project>
 			}
 		}
 		
-		if(extension.modrinth.enabled.getOrElse(false))
+		if(extension.modrinth.enabled.get())
 		{
 			publishMods.modrinth { Modrinth modrinth ->
 				modrinth.projectId.set(extension.modrinth.id.get())

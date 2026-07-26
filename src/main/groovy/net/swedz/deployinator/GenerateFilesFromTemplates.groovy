@@ -51,17 +51,31 @@ class GenerateFilesFromTemplates
 	)
 	{
 		var templateContent = input
+		
 		templateContent = templateContent.replaceAll(Pattern.quote("%{java_version}%"), DeployInatorPlugin.getJavaVersionByProjectToolchain(project).toString())
-		if(deployInator.discord.name.isPresent())
+		
+		boolean shouldPublishToDiscord =
+				deployInator.discord.enabled.get() &&
+				deployInator.discord.name.isPresent() &&
+				deployInator.discord.iconUrl.isPresent()
+		templateContent = templateContent.replaceAll(Pattern.quote("%{should_publish_to_discord}%"), shouldPublishToDiscord.toString())
+		if(shouldPublishToDiscord)
 		{
 			templateContent = templateContent.replaceAll(Pattern.quote("%{discord_name}%"), deployInator.discord.name.get())
-		}
-		if(deployInator.discord.iconUrl.isPresent())
-		{
 			templateContent = templateContent.replaceAll(Pattern.quote("%{discord_icon_url}%"), deployInator.discord.iconUrl.get())
 		}
-		var publicationName = deployInator.maven.publicationName.get()
-		templateContent = templateContent.replaceAll(Pattern.quote("%{publish_task_name}%"), "publish${publicationName.charAt(0).toUpperCase().toString() + publicationName.substring(1)}PublicationToModmavenRepository")
+		
+		boolean includeModMavenRepository =
+				deployInator.maven.enabled.get() &&
+				deployInator.maven.includeModMavenRepository.get() &&
+				deployInator.maven.publicationName.isPresent()
+		templateContent = templateContent.replaceAll(Pattern.quote("%{should_publish_to_modmaven}%"), includeModMavenRepository.toString())
+		if(includeModMavenRepository)
+		{
+			var publicationName = deployInator.maven.publicationName.get()
+			templateContent = templateContent.replaceAll(Pattern.quote("%{publish_task_name}%"), "publish${publicationName.charAt(0).toUpperCase().toString() + publicationName.substring(1)}PublicationToModmavenRepository")
+		}
+		
 		return templateContent
 	}
 }

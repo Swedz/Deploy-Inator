@@ -25,11 +25,14 @@ abstract class DeployInatorExtension
 	
 	void maven(Action<? super Maven> action)
 	{
+		this.getMaven().enabled.set(true)
 		action.execute(this.getMaven())
 	}
 	
 	abstract static class Maven
 	{
+		abstract Property<Boolean> getEnabled()
+		
 		abstract Property<String> getPublicationName()
 		
 		abstract Property<Boolean> getIncludeModMavenRepository()
