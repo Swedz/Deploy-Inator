@@ -52,7 +52,7 @@ jobs:
         run: ./gradlew build
       - name: Publish to ModMaven
         uses: gradle/gradle-build-action@v2
-        if: ${{ secrets.MODMAVEN_USERNAME && secrets.MODMAVEN_PASSWORD }}
+        if: ${{ true && secrets.MODMAVEN_USERNAME && secrets.MODMAVEN_PASSWORD }}
         with:
           arguments: publishPluginPublicationToModmavenRepository
         env:
@@ -71,6 +71,6 @@ jobs:
 
       # Post to the Discord that the update has been deployed
       - name: Post to Discord
-        if: ${{ secrets.RELEASE_WEBHOOK_URL }}
+        if: ${{ false && secrets.RELEASE_WEBHOOK_URL }}
         run: |
           curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data @prepared_discord_message.json ${{ secrets.RELEASE_WEBHOOK_URL }}
