@@ -9,8 +9,6 @@ import org.gradle.api.tasks.Nested
 
 abstract class DeployInatorExtension
 {
-	abstract Property<Boolean> getAutoGenerateFiles()
-	
 	abstract Property<String> getModName()
 	
 	abstract ListProperty<String> getCompatibleMinecraftVersions()

@@ -21,7 +21,6 @@ class DeployInatorPlugin implements Plugin<Project>
 		project.plugins.apply("me.modmuss50.mod-publish-plugin")
 		
 		var deployInator = project.extensions.create("deployInator", DeployInatorExtension)
-		deployInator.autoGenerateFiles.convention(false)
 		deployInator.maven.enabled.convention(false)
 		deployInator.maven.includeModMavenRepository.convention(true)
 		deployInator.curseforge.enabled.convention(false)
@@ -29,11 +28,7 @@ class DeployInatorPlugin implements Plugin<Project>
 		deployInator.discord.enabled.convention(false)
 		
 		project.afterEvaluate {
-			if(deployInator.autoGenerateFiles.get())
-			{
-				GenerateFilesFromTemplates.generate(project, deployInator)
-			}
-			applyGenerateFilesTask(project, deployInator)
+			applyGenerateFilesTask(it, deployInator)
 			applyBuildChangelog(it)
 			applyModMaven(it, deployInator)
 			applyPublishMods(it, deployInator)
