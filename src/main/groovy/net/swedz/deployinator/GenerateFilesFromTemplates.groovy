@@ -66,12 +66,12 @@ class GenerateFilesFromTemplates
 			templateContent = templateContent.replaceAll(Pattern.quote("%{discord_icon_url}%"), deployInator.discord.iconUrl.get())
 		}
 		
-		boolean includeModMavenRepository =
+		boolean shouldPublishToModMaven =
 				deployInator.maven.enabled.get() &&
 				deployInator.maven.includeModMavenRepository.get() &&
 				deployInator.maven.publishTaskName.isPresent()
-		templateContent = templateContent.replaceAll(Pattern.quote("%{should_publish_to_modmaven}%"), includeModMavenRepository.toString())
-		if(includeModMavenRepository)
+		templateContent = templateContent.replaceAll(Pattern.quote("%{should_publish_to_modmaven}%"), shouldPublishToModMaven.toString())
+		if(shouldPublishToModMaven)
 		{
 			if(!project.tasks.names.contains(deployInator.maven.publishTaskName.get()))
 			{
@@ -79,6 +79,16 @@ class GenerateFilesFromTemplates
 			}
 			templateContent = templateContent.replaceAll(Pattern.quote("%{publish_task_name}%"), deployInator.maven.publishTaskName.get())
 		}
+		
+		boolean shouldPublishToCurseforge =
+				deployInator.curseforge.enabled.get() &&
+				deployInator.curseforge.id.isPresent()
+		templateContent = templateContent.replaceAll(Pattern.quote("%{should_publish_to_curseforge}%"), shouldPublishToCurseforge.toString())
+		
+		boolean shouldPublishToModrinth =
+				deployInator.modrinth.enabled.get() &&
+				deployInator.modrinth.id.isPresent()
+		templateContent = templateContent.replaceAll(Pattern.quote("%{should_publish_to_modrinth}%"), shouldPublishToModrinth.toString())
 		
 		return templateContent
 	}
