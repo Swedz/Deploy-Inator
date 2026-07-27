@@ -51,16 +51,25 @@ publishing {
 	}
 	
 	publications {
-		register('plugin', MavenPublication) {
+		register("pluginMaven", MavenPublication) {
 			artifactId = project.artifact_name
-			from components.java
 			artifact tasks.named("sourceJar")
 		}
 	}
 }
 
+afterEvaluate {
+	tasks.register("publishToModmaven") {
+		group = "publishing"
+		dependsOn(
+				tasks.named("publishDeployInatorPluginMarkerMavenPublicationToModmavenRepository"),
+				tasks.named("publishPluginMavenPublicationToModmavenRepository")
+		)
+	}
+}
+
 deployInator {
 	maven {
-		publicationName = "plugin"
+		publishTaskName = "publishToModmaven"
 	}
 }

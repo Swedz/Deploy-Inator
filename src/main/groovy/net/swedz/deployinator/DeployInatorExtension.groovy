@@ -40,7 +40,7 @@ abstract class DeployInatorExtension
 	{
 		abstract Property<Boolean> getEnabled()
 		
-		abstract Property<String> getPublicationName()
+		abstract Property<String> getPublishTaskName()
 		
 		abstract Property<Boolean> getIncludeModMavenRepository()
 	}

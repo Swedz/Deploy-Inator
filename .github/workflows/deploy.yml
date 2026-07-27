@@ -59,7 +59,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         if: ${{ true && env.MODMAVEN_USERNAME != '' && env.MODMAVEN_PASSWORD != '' }}
         with:
-          arguments: publishPluginPublicationToModmavenRepository
+          arguments: publishToModmaven
       - name: Publish to Curseforge
         if: ${{ env.CURSEFORGE_API_KEY != '' }}
         run: ./gradlew publishCurseforge

@@ -1,5 +1,6 @@
 package net.swedz.deployinator
 
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 
 import java.nio.charset.StandardCharsets
@@ -68,12 +69,15 @@ class GenerateFilesFromTemplates
 		boolean includeModMavenRepository =
 				deployInator.maven.enabled.get() &&
 				deployInator.maven.includeModMavenRepository.get() &&
-				deployInator.maven.publicationName.isPresent()
+				deployInator.maven.publishTaskName.isPresent()
 		templateContent = templateContent.replaceAll(Pattern.quote("%{should_publish_to_modmaven}%"), includeModMavenRepository.toString())
 		if(includeModMavenRepository)
 		{
-			var publicationName = deployInator.maven.publicationName.get()
-			templateContent = templateContent.replaceAll(Pattern.quote("%{publish_task_name}%"), "publish${publicationName.charAt(0).toUpperCase().toString() + publicationName.substring(1)}PublicationToModmavenRepository")
+			if(!project.tasks.names.contains(deployInator.maven.publishTaskName.get()))
+			{
+				throw new GradleException("Cannot find task for name " + deployInator.maven.publishTaskName.get())
+			}
+			templateContent = templateContent.replaceAll(Pattern.quote("%{publish_task_name}%"), deployInator.maven.publishTaskName.get())
 		}
 		
 		return templateContent

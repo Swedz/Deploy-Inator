@@ -16,6 +16,7 @@ pluginManagement {
 			url "https://modmaven.dev"
 			content {
 				includeGroup "net.swedz"
+				includeGroup "net.swedz.deploy-inator"
 			}
 		}
 	}
@@ -55,9 +56,9 @@ deployInator {
 	modLoaders "neoforge"
 	
 	maven {
-		// The publication name to use when publishing, as defined by your registered publication in your build.gradle.
-		// Optional. When not set, the generated GitHub workflow will not publish to ModMaven.
-		publicationName = "java"
+		// The name of the gradle task to execute when publishing to ModMaven.
+		// Optional. When not set, the generated GitHub workflow will not publish anywhere.
+		publishTaskName = "publishMavenJavaPublicationToModmavenRepository"
 		// Whether the publication to the ModMaven repository should be registered.
 		// Optional. Defaults to true. If false, the generated GitHub workflow will not publish to ModMaven.
 		includeModMavenRepository = true
