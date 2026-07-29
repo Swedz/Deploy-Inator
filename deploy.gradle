@@ -1,0 +1,28 @@
+publishing {
+	repositories {
+		mavenLocal()
+	}
+	
+	publications {
+		register("pluginMaven", MavenPublication) {
+			artifactId = project.artifact_name
+			artifact tasks.named("sourceJar")
+		}
+	}
+}
+
+afterEvaluate {
+	tasks.register("publishToModmaven") {
+		group = "publishing"
+		dependsOn(
+				tasks.named("publishDeployInatorPluginMarkerMavenPublicationToModmavenRepository"),
+				tasks.named("publishPluginMavenPublicationToModmavenRepository")
+		)
+	}
+}
+
+deployInator {
+	maven {
+		publishTaskName = "publishToModmaven"
+	}
+}

@@ -45,31 +45,4 @@ dependencies {
 	implementation "me.modmuss50:mod-publish-plugin:2.1.1"
 }
 
-publishing {
-	repositories {
-		mavenLocal()
-	}
-	
-	publications {
-		register("pluginMaven", MavenPublication) {
-			artifactId = project.artifact_name
-			artifact tasks.named("sourceJar")
-		}
-	}
-}
-
-afterEvaluate {
-	tasks.register("publishToModmaven") {
-		group = "publishing"
-		dependsOn(
-				tasks.named("publishDeployInatorPluginMarkerMavenPublicationToModmavenRepository"),
-				tasks.named("publishPluginMavenPublicationToModmavenRepository")
-		)
-	}
-}
-
-deployInator {
-	maven {
-		publishTaskName = "publishToModmaven"
-	}
-}
+apply from: 'deploy.gradle'
