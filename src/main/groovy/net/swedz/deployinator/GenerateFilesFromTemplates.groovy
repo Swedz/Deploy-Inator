@@ -53,6 +53,8 @@ class GenerateFilesFromTemplates
 	{
 		var templateContent = input
 		
+		templateContent = templateContent.replaceAll(Pattern.quote("%{version_environment_variable}%"), deployInator.getVersionEnvironmentVariableName().get())
+		
 		templateContent = templateContent.replaceAll(Pattern.quote("%{java_version}%"), DeployInatorPlugin.getJavaVersionByProjectToolchain(project).toString())
 		
 		boolean shouldPublishToDiscord =

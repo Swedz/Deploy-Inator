@@ -21,6 +21,7 @@ class DeployInatorPlugin implements Plugin<Project>
 		project.plugins.apply("me.modmuss50.mod-publish-plugin")
 		
 		var deployInator = project.extensions.create("deployInator", DeployInatorExtension)
+		deployInator.versionEnvironmentVariableName.convention("MOD_VERSION")
 		deployInator.maven.enabled.convention(false)
 		deployInator.maven.includeModMavenRepository.convention(true)
 		deployInator.curseforge.enabled.convention(false)

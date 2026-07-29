@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'net.swedz'
-version = (System.getenv("VERSION") ?: "0.0.0-local")
+version = (System.getenv("DEPLOYINATOR_VERSION") ?: "0.0.0-local")
 base {
 	archivesName = project.artifact_name
 }

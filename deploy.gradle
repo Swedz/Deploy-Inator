@@ -22,6 +22,8 @@ afterEvaluate {
 }
 
 deployInator {
+	versionEnvironmentVariableName = "DEPLOYINATOR_VERSION"
+	
 	maven {
 		publishTaskName = "publishToModmaven"
 	}
