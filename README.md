@@ -32,16 +32,22 @@ plugins {
 }
 ```
 
+In your `build.gradle`, you will want to choose an environment variable name. By default, Deploy-Inator provides
+"MOD_VERSION". Below is an example of how you should configure your project version:
+
+```groovy
+version = (System.getenv("MOD_VERSION") ?: "0.0.0-local")
+```
+
 The below uses reference to properties that you can define in your `gradle.properties`. I recommend doing it this way,
 but you can also write your values out directly in strings.
 
 ```groovy
 deployInator {
-	// Whether the template files should be automatically generated on gradle reload.
-	// This effectively runs the `deployInatorGenerateFiles` gradle task.
-	// Optional. Defaults to false.
-	autoGenerateFiles = false
-	
+	// The environment variable name to be used for your project's version.
+	// This must be the same environment variable that you used to define your project version as explained above.
+	// Optional. Defaults to "MOD_VERSION".
+	versionEnvironmentVariableName = "MOD_VERSION"
 	// If you are using Deploy-Inator for publishing mods, these are required.
 	// The display name for the mod. Will be included in the release name on Curseforge and Modrinth.
 	// Optional. Must be set if Curseforge or Modrinth publishing is to be used.
