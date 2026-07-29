@@ -2,7 +2,11 @@
 
 > Behold! My Deploy-Inator!
 
-A simple gradle plugin that simplifies the deployment process for Minecraft mods.
+A simple gradle plugin that simplifies the deployment process for Minecraft mods to ModMaven, CurseForge, Modrinth, and
+Discord! Deploy-Inator provides tools that generate GitHub workflows which allows you to automatically deploy your
+project to all the aformentioned platforms by creating a release on your GitHub repository!
+
+Internally, Deploy-Inator uses [modmuss50's Mod Publish Plugin](https://github.com/modmuss50/mod-publish-plugin).
 
 ## Setup
 
@@ -69,7 +73,7 @@ deployInator {
 		// Optional. Defaults to true. If false, the generated GitHub workflow will not publish to ModMaven.
 		includeModMavenRepository = true
 	}
-
+	
 	curseforge {
 		// The Curseforge project ID.
 		// Required.
@@ -85,7 +89,7 @@ deployInator {
 		// Optional. Defaults to true.
 		client = true
 	}
-
+	
 	modrinth {
 		// The Modrinth project ID.
 		// Required.
@@ -134,3 +138,19 @@ If a secret pertaining to a given step is not set in your repository, the step w
 | CURSEFORGE_API_KEY                      | The API key to publish to Curseforge with.           |
 | MODRINTH_API_KEY                        | The API key to publish to Modrinth with.             |
 | RELEASE_WEBHOOK_URL                     | The webhook URL to use to send a message in Discord. |
+
+## Creating Releases
+
+Once Deploy-Inator is fully configured to your liking, publishing to all your configured platforms is as simple as
+creating a release on GitHub. Here are a some caveats to keep in mind:
+
+- Release content format must use the default generated format by GitHub.
+	- With the only exception being that the "New Contributors" section it generates is not supported. Whenever that is
+	  created, you must remove it. Ensure that there are exactly **two empty lines** between the end of your "What's
+      Changed" section and the "Full changelog" line.
+        - I do hope to eventually remedy this, but it works for my use case at the moment so I have not bothered yet.
+- The version value provided to your environment variable will be the release tag name except the first hyphen and all
+  subsequent characters.
+    - This means a tag with the name "1.0.0-1.21.1" will result in the version of your mod being "1.0.0".
+    - Additionally, including "alpha" or "beta" in your release tag will flag it as such for all configured destination
+      platforms.
