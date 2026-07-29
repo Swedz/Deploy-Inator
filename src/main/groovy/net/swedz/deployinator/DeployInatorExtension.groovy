@@ -118,5 +118,7 @@ abstract class DeployInatorExtension
 		abstract Property<String> getName()
 		
 		abstract Property<String> getIconUrl()
+		
+		abstract Property<String> getMinecraftVersion()
 	}
 }

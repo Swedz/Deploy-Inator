@@ -60,12 +60,14 @@ class GenerateFilesFromTemplates
 		boolean shouldPublishToDiscord =
 				deployInator.discord.enabled.get() &&
 				deployInator.discord.name.isPresent() &&
-				deployInator.discord.iconUrl.isPresent()
+				deployInator.discord.iconUrl.isPresent() &&
+				deployInator.discord.minecraftVersion.isPresent()
 		templateContent = templateContent.replaceAll(Pattern.quote("%{should_publish_to_discord}%"), shouldPublishToDiscord.toString())
 		if(shouldPublishToDiscord)
 		{
 			templateContent = templateContent.replaceAll(Pattern.quote("%{discord_name}%"), deployInator.discord.name.get())
 			templateContent = templateContent.replaceAll(Pattern.quote("%{discord_icon_url}%"), deployInator.discord.iconUrl.get())
+			templateContent = templateContent.replaceAll(Pattern.quote("%{minecraft_version}%"), deployInator.discord.minecraftVersion.get())
 		}
 		
 		boolean shouldPublishToModMaven =

@@ -111,6 +111,9 @@ deployInator {
 		// I recommend using a direct static link to an image. Such as one NOT hosted by Discord.
 		// Required.
 		iconUrl = project.deploy_discord_icon
+		// The Minecraft version to display in the Discord update message publication.
+		// Required.
+		minecraftVersion = project.minecraft_version
 	}
 }
 ```
