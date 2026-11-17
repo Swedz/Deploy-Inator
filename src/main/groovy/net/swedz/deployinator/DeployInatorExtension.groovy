@@ -2,6 +2,7 @@ package net.swedz.deployinator
 
 import me.modmuss50.mpp.platforms.modrinth.ModrinthEnvironment
 import org.gradle.api.Action
+import org.gradle.api.JavaVersion
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
@@ -9,6 +10,8 @@ import org.gradle.api.tasks.Nested
 
 abstract class DeployInatorExtension
 {
+	abstract Property<JavaVersion> getGradleJavaVersion()
+	
 	abstract Property<String> getVersionEnvironmentVariableName()
 	
 	abstract Property<String> getModName()

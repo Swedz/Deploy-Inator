@@ -21,6 +21,7 @@ class DeployInatorPlugin implements Plugin<Project>
 		project.plugins.apply("me.modmuss50.mod-publish-plugin")
 		
 		var deployInator = project.extensions.create("deployInator", DeployInatorExtension)
+		deployInator.gradleJavaVersion.convention(getJavaVersionByProjectToolchain(project))
 		deployInator.versionEnvironmentVariableName.convention("MOD_VERSION")
 		deployInator.maven.enabled.convention(false)
 		deployInator.maven.includeModMavenRepository.convention(true)
@@ -36,7 +37,7 @@ class DeployInatorPlugin implements Plugin<Project>
 		}
 	}
 	
-	static JavaVersion getJavaVersionByProjectToolchain(Project project)
+	private static JavaVersion getJavaVersionByProjectToolchain(Project project)
 	{
 		return JavaVersion.toVersion(project.extensions.getByType(JavaPluginExtension).toolchain.languageVersion.get().asInt())
 	}
