@@ -55,7 +55,7 @@ class GenerateFilesFromTemplates
 		
 		templateContent = templateContent.replaceAll(Pattern.quote("%{version_environment_variable}%"), deployInator.getVersionEnvironmentVariableName().get())
 		
-		templateContent = templateContent.replaceAll(Pattern.quote("%{java_version}%"), DeployInatorPlugin.getJavaVersionByProjectToolchain(project).toString())
+		templateContent = templateContent.replaceAll(Pattern.quote("%{java_version}%"), deployInator.gradleJavaVersion.get().toString())
 		
 		boolean shouldPublishToDiscord =
 				deployInator.discord.enabled.get() &&

@@ -10,7 +10,7 @@ Internally, Deploy-Inator uses [modmuss50's Mod Publish Plugin](https://github.c
 
 ## Setup
 
-First, you must included ModMaven in your plugin management repositories in your `settings.gradle`:
+First, you must include ModMaven in your plugin management repositories in your `settings.gradle`:
 
 ```groovy
 pluginManagement {
@@ -48,6 +48,9 @@ but you can also write your values out directly in strings.
 
 ```groovy
 deployInator {
+	// The Java version to use for gradle when deploying.
+	// Optional. Defaults to the value set by java.toolchain.languageVersion in your gradle project.
+	gradleJavaVersion = JavaVersion.VERSION_21
 	// The environment variable name to be used for your project's version.
 	// This must be the same environment variable that you used to define your project version as explained above.
 	// Optional. Defaults to "MOD_VERSION".
